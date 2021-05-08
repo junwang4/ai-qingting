@@ -11,20 +11,22 @@ def divide_20k_chats_into_small_files():
     out = []
     for m in data:
         ti = m['title'].strip()
-        following = ' // '.join([o['value'].strip().replace('\n', ' ') for o in m['chats'] if o['sender']=='owner'])
+        following_from_self = ' // '.join([o['value'].strip().replace('\n', ' ') for o in m['chats'] if o['sender']=='owner'])
+        following_from_others = ' // '.join([o['value'].strip().replace('\n', ' ') for o in m['chats'] if o['sender']!='owner'])
         s1 = m['label']['s1']
         s2 = m['label']['s2']
-        out.append({'s1':s1, 'title':ti, 'following': following })
+        out.append({'s1':s1, 'beginning_description':ti, 'following_from_self': following_from_self, 'following_from_others': following_from_others })
     
     df_out = pd.DataFrame(out)
     df_out.sort_values('s1')
 
     print(df_out.s1.value_counts())
-    #print(df_out.head())
-    #print(df_out.tail())
+    print(df_out.iloc[0])
 
     folder_out = "../data"
-    for s1 in '1.19 1.3'.split():
+    s1_wanted = '1.19 1.3'.split()
+    #s1_wanted = '1.19'.split()
+    for s1 in s1_wanted:
         df_ = df_out[df_out.s1 == s1]
         s1_name = id_name[s1]
         if len(df_) < 500:
