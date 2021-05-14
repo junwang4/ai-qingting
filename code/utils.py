@@ -1,3 +1,4 @@
+import re
 import pandas as pd
 import efaqa_corpus_zh
 
@@ -13,9 +14,14 @@ def divide_20k_chats_into_small_files():
         ti = m['title'].strip()
         following_from_self = ' // '.join([o['value'].strip().replace('\n', ' ') for o in m['chats'] if o['sender']=='owner'])
         following_from_others = ' // '.join([o['value'].strip().replace('\n', ' ') for o in m['chats'] if o['sender']!='owner'])
+        ti = re.sub(r'\s+', '、', ti)
+        following_from_self = re.sub(r'\s+', '、', following_from_self)
+        following_from_others = re.sub(r'\s+', '、', following_from_others)
+
         s1 = m['label']['s1']
         s2 = m['label']['s2']
-        out.append({'s1':s1, 'beginning_description':ti, 'following_from_self': following_from_self, 'following_from_others': following_from_others })
+
+        out.append({'s1':s1, 'reviewed':'', 'beginning_description':ti, 'following_from_self': following_from_self, 'following_from_others': following_from_others })
     
     df_out = pd.DataFrame(out)
     df_out.sort_values('s1')
@@ -29,14 +35,15 @@ def divide_20k_chats_into_small_files():
     for s1 in s1_wanted:
         df_ = df_out[df_out.s1 == s1]
         s1_name = id_name[s1]
+        
         if len(df_) < 500:
-            fpath_out = f'{folder_out}/{s1_name}.csv'
-            df_.to_csv(fpath_out, index=False)
+            fpath_out = f'{folder_out}/{s1_name}.xlsx'
+            df_.to_excel(fpath_out, index=False, encoding="utf-8")
         else:
             for i in range(0, len(df_), 500):
                 df__ = df_[i:(i+500)]
-                fpath_out = f'{folder_out}/{s1_name}__{i}.csv'
-                df__.to_csv(fpath_out, index=False)
+                fpath_out = f'{folder_out}/{s1_name}__{i}.xlsx'
+                df__.to_excel(fpath_out, index=False, encoding="utf-8")
 
 
 
