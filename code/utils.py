@@ -32,11 +32,14 @@ def divide_20k_chats_into_small_files():
     folder_out = "../data"
     s1_wanted = '1.19 1.3'.split()
     #s1_wanted = '1.19'.split()
+    s1_wanted = '1.1 1.2 1.4 1.5 1.6 1.7 1.8 1.9 1.10'.split()
+    s1_wanted = '1.11 1.12 1.13 1.14 1.15 1.16 1.17 1.18'.split()
     for s1 in s1_wanted:
         df_ = df_out[df_out.s1 == s1]
         s1_name = id_name[s1]
         
-        if len(df_) < 500:
+        #if len(df_) < 500:
+        if len(df_) < 550:
             fpath_out = f'{folder_out}/{s1_name}.xlsx'
             df_.to_excel(fpath_out, index=False, encoding="utf-8")
         else:
